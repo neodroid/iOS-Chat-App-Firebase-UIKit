@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "9582530D-724E-4473-BA76-AF7852801B17"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FBE3C79D-C417-4437-82DA-C77F756FDC38"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FireChat/Controller/Authentication/LoginController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
+            landmarkName = "emailTextField"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "FBE3C79D-C417-4437-82DA-C77F756FDC38 - b329884a7f75d887"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FireChat.LoginController.init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__C.NSBundle&gt;) -&gt; FireChat.LoginController"
+                  moduleName = "FireChat"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kevinahmad/Documents/Development/FireChat/FireChat/Controller/Authentication/LoginController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "29"
+                  endingLineNumber = "29"
+                  offsetFromSymbolStart = "116">
+               </Location>
+               <Location
+                  uuid = "FBE3C79D-C417-4437-82DA-C77F756FDC38 - 1e8d2b652a617f3b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FireChat.LoginController.init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;FireChat.LoginController&gt;"
+                  moduleName = "FireChat"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kevinahmad/Documents/Development/FireChat/FireChat/Controller/Authentication/LoginController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "29"
+                  endingLineNumber = "29"
+                  offsetFromSymbolStart = "96">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
