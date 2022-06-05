@@ -15,6 +15,8 @@ class ConversationsController: UIViewController {
     //MARK: - Properties
     
     private let tableView = UITableView()
+    private var conversations = [Conversation]()
+    private var conversationsDictionary = [String: Conversation]()
     
     private let newMessageButton: UIButton = {
         let button = UIButton(type: .system)
@@ -32,6 +34,13 @@ class ConversationsController: UIViewController {
         super.viewDidLoad()
         configureUI()
         authenticateUser()
+        fetchConversations()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        configureNavigationBar(withTitle: "Messages", preferLargeTitles: true)
+
     }
     //MARK: - Selectors
     
@@ -42,11 +51,26 @@ class ConversationsController: UIViewController {
     
     @objc func showNewMessage() {
         let controller = NewMessageController()
+        controller.delegate = self
         let nav = UINavigationController(rootViewController: controller)
         nav.modalPresentationStyle = .fullScreen
         present(nav, animated: true, completion: nil)
     }
     //MARK: - API
+    
+    func fetchConversations() {
+        Service.fetchConversations { conversations in
+
+            conversations.forEach { conversation in
+                let message = conversation.message
+                self.conversationsDictionary[message.toId] = conversation
+            }
+            
+            self.conversations = Array(self.conversationsDictionary.values)
+            
+            self.tableView.reloadData()
+        }
+    }
     
     func authenticateUser() {
         if Auth.auth().currentUser?.uid == nil{
@@ -80,7 +104,6 @@ class ConversationsController: UIViewController {
         view.backgroundColor = .white
         
         
-        configureNavigationBar(withTitle: "Messages", preferLargeTitles: true)
         configureTableView()
         let image = UIImage(systemName: "person.circle.fill")
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(showProfile))
@@ -94,7 +117,7 @@ class ConversationsController: UIViewController {
     func configureTableView() {
         tableView.backgroundColor = .white
         tableView.rowHeight = 80
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.register(ConversationCell.self, forCellReuseIdentifier: reuseIdentifier)
         tableView.tableFooterView = UIView()
         
         tableView.delegate = self
@@ -104,25 +127,47 @@ class ConversationsController: UIViewController {
         tableView.frame = view.frame
     }
     
+    func showChatController(forUser user:User) {
+        let controller = ChatController(user: user)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+    
 }
+
+//MARK: - UITableViewDataSource
 
 extension ConversationsController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return conversations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-        cell.textLabel?.text = "Test Cell"
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! ConversationCell
+        cell.conversation = conversations[indexPath.row]
+
         return cell
     }
     
     
 }
+
+// MARK: - UITableViewDelegate
 extension ConversationsController: UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath.row)
+        let user = conversations[indexPath.row].user
+        showChatController(forUser: user)
+
     }
     
+}
+
+// MARK: - New message controller delegate
+
+extension ConversationsController: NewMessageControllerDelegate {
+    func controller(_ controller: NewMessageController, wantsToStartChatWith user: User) {
+        controller.dismiss(animated: true,completion: nil)
+        showChatController(forUser: user)
+        
+    }
 }
