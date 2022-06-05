@@ -10,9 +10,12 @@ import Firebase
 
 private let reuseIdentifier = "ConversationCell"
 
+
+
 class ConversationsController: UIViewController {
     
     //MARK: - Properties
+    
     
     private let tableView = UITableView()
     private var conversations = [Conversation]()
@@ -45,7 +48,13 @@ class ConversationsController: UIViewController {
     //MARK: - Selectors
     
     @objc func showProfile() {
-        logout()
+        
+        let controller = ProfileController(style: .insetGrouped)
+        controller.delegate = self
+        let nav = UINavigationController(rootViewController: controller)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
+        
     }
     
     
@@ -83,6 +92,7 @@ class ConversationsController: UIViewController {
     func logout(){
         do{
             try Auth.auth().signOut()
+            presentLoginScreen()
         } catch {
             print("DEBUG: Error signin out")
         }
@@ -171,3 +181,10 @@ extension ConversationsController: NewMessageControllerDelegate {
         
     }
 }
+
+extension ConversationsController: ProfileControllerDelegate {
+    func handleLogout() {
+        logout()
+    }
+}
+
