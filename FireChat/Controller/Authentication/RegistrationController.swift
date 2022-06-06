@@ -14,6 +14,8 @@ class RegistrationController: UIViewController {
 // MARK: - Properties
     private var viewModel = RegistrationViewModel()
     
+    weak var delegate: AuthenticationDelegate?
+    
 private let imagePicker =  UIImagePickerController()
 private var profileImage: UIImage?
 
@@ -103,7 +105,7 @@ override func viewDidLoad() {
 @objc func handleSignup() {
     
     guard let profileImage = profileImage else {
-        print("DEBUG: Please select a profile image")
+        self.showError("Please select a profile image")
         return
     }
     
@@ -112,21 +114,20 @@ override func viewDidLoad() {
     guard let fullname = fullnameTextField.text else { return  }
     guard let username = usernameTextField.text else { return  }
     
-    let hud = JGProgressHUD(style: .dark)
-    hud.textLabel.text = "Signing up"
-    hud.show(in: view)
-    
+    print("lololololololol")
+    self.showLoader(true,withText: "Signing up")
     let credentials = AuthCredentials(email: email, password: password, fullname: fullname, username: username, profileImage: profileImage)
     
 
     AuthService.shared.createUser(credentials: credentials) { error in
         if let error = error {
-            print("DEBUG: Error auth with error \(error.localizedDescription)")
-            hud.dismiss(animated: true)
+            self.showLoader(false)
+            self.showError(error.localizedDescription)
+            
             return
         }
-        hud.dismiss(animated: true)
-        self.dismiss(animated: true, completion: nil)
+        self.showLoader(false)
+        self.delegate?.authenticationComplete()
     }
 }
     

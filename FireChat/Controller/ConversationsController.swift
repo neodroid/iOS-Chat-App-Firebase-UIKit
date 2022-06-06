@@ -68,15 +68,17 @@ class ConversationsController: UIViewController {
     //MARK: - API
     
     func fetchConversations() {
+        showLoader(true)
         Service.fetchConversations { conversations in
+            
 
             conversations.forEach { conversation in
                 let message = conversation.message
-                self.conversationsDictionary[message.toId] = conversation
+                self.conversationsDictionary[message.chatPartnerId] = conversation
             }
-            
+            self.showLoader(false)
+
             self.conversations = Array(self.conversationsDictionary.values)
-            
             self.tableView.reloadData()
         }
     }
@@ -84,8 +86,6 @@ class ConversationsController: UIViewController {
     func authenticateUser() {
         if Auth.auth().currentUser?.uid == nil{
             presentLoginScreen()
-        }else {
-            print("DEBUG: User is logged in")
         }
     }
     
@@ -103,6 +103,7 @@ class ConversationsController: UIViewController {
     func presentLoginScreen() {
         DispatchQueue.main.async {
             let controller = LoginController()
+            controller.delegate = self
             let nav = UINavigationController(rootViewController: controller)
             nav.modalPresentationStyle = .fullScreen
             self.present(nav, animated: true, completion: nil)
@@ -176,15 +177,26 @@ extension ConversationsController: UITableViewDelegate{
 
 extension ConversationsController: NewMessageControllerDelegate {
     func controller(_ controller: NewMessageController, wantsToStartChatWith user: User) {
-        controller.dismiss(animated: true,completion: nil)
+        dismiss(animated: true,completion: nil)
         showChatController(forUser: user)
         
     }
 }
 
+// MARK: - ProfileControllerDelegate
+
+
 extension ConversationsController: ProfileControllerDelegate {
     func handleLogout() {
         logout()
+    }
+}
+
+extension ConversationsController: AuthenticationDelegate {
+    func authenticationComplete() {
+        configureUI()
+        fetchConversations()
+        dismiss(animated: true, completion: nil)
     }
 }
 

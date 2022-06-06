@@ -51,7 +51,9 @@ class ChatController: UICollectionViewController {
     // MARK: - API
     
     func fectMessages() {
+//        showLoader(true)
         Service.fetchMessages(forUser: user) { messages in
+//            self.showLoader(false)
             self.messages = messages
             self.collectionView.reloadData()
             self.collectionView.scrollToItem(at: [0,self.messages.count - 1], at: .bottom, animated: true)

@@ -12,10 +12,16 @@ protocol AuthenticationControllerProtocol {
     func checkFormStatus()
 }
 
+protocol AuthenticationDelegate: class {
+    func authenticationComplete()
+}
+
 class LoginController: UIViewController {
     
     // MARK: - Properties
     private var viewModel = LoginViewModel()
+    
+    weak var delegate: AuthenticationDelegate?
     
     private lazy var emailContainerView: UIView = {
         let view = Utilities().inputContainerView(withImage: UIImage(named: "ic_mail_outline_white_2x-1")!,textField: emailTextField)
@@ -66,6 +72,12 @@ class LoginController: UIViewController {
         configureUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = true
+        navigationController?.navigationBar.barStyle = .black
+    }
+    
     // MARK: - Selectors
     
     @objc func handleLogin() {
@@ -76,12 +88,13 @@ class LoginController: UIViewController {
         
         AuthService.shared.logUserIn(withEmail: email, password: password) { result, error in
             if let error = error {
-                print("DEBUG: login error with error \(error.localizedDescription)")
+
                 self.showLoader(false)
+                self.showError(error.localizedDescription)
                 return
             }
             self.showLoader(false)
-            self.dismiss(animated: true, completion: nil)
+            self.delegate?.authenticationComplete()
         }
         
     }
@@ -89,6 +102,7 @@ class LoginController: UIViewController {
     
     @objc func handleShowSignUp() {
         let controller = RegistrationController()
+        controller.delegate = delegate
         navigationController?.pushViewController(controller, animated: true)
         
         
@@ -145,3 +159,5 @@ extension LoginController: AuthenticationControllerProtocol {
         
     }
 }
+
+

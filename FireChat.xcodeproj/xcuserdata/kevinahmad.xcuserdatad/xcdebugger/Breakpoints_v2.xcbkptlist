@@ -14,8 +14,8 @@
             filePath = "FireChat/Controller/Authentication/LoginController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "32"
-            endingLineNumber = "32"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
             landmarkName = "emailTextField"
             landmarkType = "24">
             <Locations>
